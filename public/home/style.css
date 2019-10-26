@@ -73,6 +73,15 @@ body > div:not(#header) {
 #submitButton:active {
   border: 2px inset turquoise;
 }
+#recently-played td:nth-child(2) {
+  width: 100%;
+}
+#recently-played td:last-child {
+  text-align: center;
+}
+#recently-played td:last-child a:last-child {
+  font-size: 90%;
+}
 .star {
   color: red;
   font-weight: bold;
@@ -125,4 +134,20 @@ body > div:not(#header) {
   margin-top: 0.25em;
   margin-bottom: 0.25em;
   border: 1px solid black;
+}
+.playButton {
+  display: block;
+  background-color: red;
+  height: 4em;
+  width: 4em;
+  border-radius: 1em;
+  color: white;
+  text-align: center;
+  line-height: 4em;
+  cursor: pointer;
+  text-decoration: none;
+}
+.playButton::after {
+  content: "▶";
+  font-size: 1.5em;
 }
