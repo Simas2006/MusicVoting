@@ -1,37 +1,5 @@
-var songs = [
-  {
-    "title": "Satisfied",
-    "author": "Hamilton",
-    "url": "Hf1NDb_Hc60",
-    "votes": 20,
-    "recentlyPlayed": true,
-    "reports": 0
-  },
-  {
-    "title": "Non-Stop",
-    "author": "Hamilton",
-    "url": "Hf1NDb_Hc60",
-    "votes": 15,
-    "recentlyPlayed": true,
-    "reports": 0
-  },
-  {
-    "title": "The World Was Wide Enough",
-    "author": "Hamilton",
-    "url": "Hf1NDb_Hc60",
-    "votes": 10,
-    "recentlyPlayed": true,
-    "reports": 0
-  },
-  {
-    "title": "You Need to Calm Down",
-    "author": "Taylor Swift",
-    "url": "Dkk9gvTmCXY",
-    "votes": 5,
-    "recentlyPlayed": true,
-    "reports": 0
-  }
-];
+var socket = io();
+var songs;
 
 function renderSongs() {
   var table = document.getElementById("votableSongs");
@@ -76,4 +44,11 @@ function renderSongs() {
   }
 }
 
-window.onload = renderSongs;
+function setupHandlers() {
+  socket.on("get-songs",function(data) {
+    songs = data;
+    renderSongs();
+  });
+}
+
+window.onload = setupHandlers;
