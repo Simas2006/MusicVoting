@@ -73,13 +73,13 @@ body > div:not(#header) {
 #submitButton:active {
   border: 2px inset turquoise;
 }
-#recently-played td:nth-child(2) {
+#votableSongs td:nth-child(2) {
   width: 100%;
 }
-#recently-played td:last-child {
+#votableSongs td:last-child {
   text-align: center;
 }
-#recently-played td:last-child a:last-child {
+#votableSongs td:last-child a:last-child {
   font-size: 90%;
 }
 .star {
