@@ -21,24 +21,24 @@
     <table>
       <tr>
         <td>Song Name<span class="star">*</span>:</td>
-        <td><input type="text" id="submit-songname" /></td>
+        <td><input type="text" id="submitSongname" /></td>
       </tr>
       <tr>
         <td>YouTube URL<span class="star">*</span>:</td>
-        <td><input type="text" id="submit-songname" /></td>
+        <td><input type="text" id="submitURL" /></td>
       </tr>
       <tr>
         <td>Author/Singer:</td>
-        <td><input type="text" id="submit-author" /></td>
+        <td><input type="text" id="submitAuthor" /></td>
       </tr>
       <tr>
-        <td>
-          Your E-Mail Address<span class="star">*</span>:</td>
-        <td><input type="text" id="submit-email" /></td>
+        <td>Your E-Mail Address<span class="star">*</span>:</td>
+        <td><input type="text" id="submitEmail" /></td>
       </tr>
       <tr>
-        <td>
-          <button id="submitButton">Submit</button>
+        <td colspan="2">
+          <button id="submitButton" onclick="submitSong()">Submit</button>
+          <span id="badDataInfo"></span>
         </td>
       </tr>
     </table>
