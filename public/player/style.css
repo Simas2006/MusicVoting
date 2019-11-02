@@ -1,0 +1,54 @@
+body {
+  font-family: "Raleway";
+  padding: 0;
+  font-size: 140%;
+  margin-top: 3em;
+  margin-left: 0;
+  text-align: center;
+}
+button {
+  font-family: "Raleway";
+}
+* {
+  margin: 0;
+}
+a {
+  color: black;
+}
+b {
+  font-size: 125%;
+}
+button {
+  font-size: 95%;
+  height: 1.6em;
+  padding-top: 0;
+  background-color: turquoise;
+  font-weight: bold;
+  border: 4px outset turquoise;
+  outline: 0;
+  cursor: pointer;
+}
+button:active {
+  border: 4px inset turquoise;
+}
+#header {
+  display: flex;
+  position: fixed;
+  top: 0;
+  width: 100vw;
+  height: 2.5em;
+  background-color: gold;
+  align-items: center;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+  z-index: 100;
+}
+#header * {
+  margin-right: 0.15em;
+}
+#player {
+  display: inline-block;
+  border: 15px inset gray;
+  width: 800px;
+  height: 488px;
+}

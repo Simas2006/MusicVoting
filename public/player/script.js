@@ -1,23 +1,38 @@
-var list = [
-  "Hf1NDb_Hc60",
-  "-zp6nLiqtHs",
-  "OSs6xiXON4s",
-  "Dkk9gvTmCXY"
-];
-var nextIndex = 0;
+var socket,player;
+var apiReady = false;
+var initComplete = false;
 
-var player;
-function onYouTubePlayerAPIReady() {
+function createPlayer(firstSong) {
   player = new YT.Player('player', {
-    width: '640',
-    height: '390',
-    videoId: list[nextIndex],
+    width: "800",
+    height: "488",
+    videoId: firstSong,
     events: {
       onReady: onPlayerReady,
       onStateChange: onPlayerStateChange
     }
   });
-  nextIndex++;
+  initComplete = true;
+}
+
+function requestNextSong() {
+  socket.emit("get-song",function(songObj) {
+    if ( initComplete ) player.loadVideoById(songObj.url,0);
+    else createPlayer(songObj.url);
+  });
+}
+
+function startMusic() {
+  if ( initComplete ) return;
+  if ( ! apiReady ) {
+    alert("The YouTube API is not yet loaded. Please wait and try again.");
+    return;
+  }
+  requestNextSong();
+}
+
+function onYouTubePlayerAPIReady() {
+  apiReady = true;
 }
 
 function onPlayerReady(event) {
@@ -25,8 +40,11 @@ function onPlayerReady(event) {
 }
 
 function onPlayerStateChange(event) {
-  if ( event.data == YT.PlayerState.ENDED ) {
-    player.loadVideoById(list[nextIndex],0);
-    nextIndex++;
-  }
+  if ( event.data == YT.PlayerState.ENDED ) requestNextSong();
 }
+
+function setupHandlers() {
+  socket = io("/player");
+}
+
+window.onload = setupHandlers;

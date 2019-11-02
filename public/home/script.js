@@ -6,6 +6,7 @@ function renderSongs() {
     table.removeChild(table.firstChild);
   }
   var ids = Object.keys(songs);
+  ids = ids.sort((a,b) => songs[b].votes - songs[a].votes);
   for ( var i = 0; i < ids.length; i++ ) {
     var row = document.createElement("tr");
     row.id = "song-" + ids[i];
@@ -38,9 +39,11 @@ function renderSongs() {
     link.target = "_blank";
     col2.appendChild(link);
     col2.appendChild(document.createElement("br"));
-    var sub = document.createElement("sub");
-    sub.innerText = "By " + songs[ids[i]].author;
-    col2.appendChild(sub);
+    if ( songs[ids[i]].author ) {
+      var sub = document.createElement("sub");
+      sub.innerText = "By " + songs[ids[i]].author;
+      col2.appendChild(sub);
+    }
     row.appendChild(col2);
     var col3 = document.createElement("td");
     var playButton = document.createElement("a");
@@ -145,7 +148,7 @@ function submitSong() {
 function setupHandlers() {
   if ( ! localStorage.getItem("vote") ) localStorage.setItem("vote","{}");
   voteTable = JSON.parse(localStorage.getItem("vote"));
-  socket = io();
+  socket = io("/home");
   socket.on("get-songs",function(data) {
     songs = data;
     renderSongs();

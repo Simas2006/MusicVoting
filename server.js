@@ -5,12 +5,15 @@ var app = express();
 var http = require("http").createServer(app);
 var io = require("socket.io")(http);
 var PORT = process.argv[2] || 8000;
+
+var homeNsp = io.of("/home");
+var playerNsp = io.of("/player");
 var songFile;
 var songFileDirty = false;
 
 app.use("/public",express.static(__dirname + "/public"));
 
-io.on("connection",function(socket) {
+homeNsp.on("connection",function(socket) {
   socket.emit("get-songs",songFile);
   socket.on("vote-song",function(id,magnitude) {
     if ( magnitude < -2 || magnitude > 2 ) return;
@@ -20,7 +23,6 @@ io.on("connection",function(socket) {
     socket.emit("get-songs",songFile);
   });
   socket.on("submit-song",function(songObj,callback) {
-    console.log(songObj)
     if ( songObj.url.length != 11 || ! /^[a-zA-Z0-9\-_]+$/.test(songObj.url) ) return;
     if ( ! /^[a-zA-Z]+@[a-z]+\.[a-z]{3}$/.test(songObj.email) ) return;
     if ( ! songObj.title ) return;
@@ -38,6 +40,18 @@ io.on("connection",function(socket) {
       songFileDirty = true;
       callback(true,id,songFile);
     });
+  });
+});
+
+playerNsp.on("connection",function(socket) {
+  var ids = Object.keys(songFile).sort((a,b) => songFile[b].votes - songFile[a].votes);
+  var nextSongIndex = 0;
+  socket.on("get-song",function(callback) {
+    if ( nextSongIndex < ids.length ) {
+      callback(songFile[ids[nextSongIndex++]]);
+    } else {
+      callback(null);
+    }
   });
 });
 

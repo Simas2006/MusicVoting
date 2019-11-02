@@ -3,11 +3,20 @@
 <head>
   <meta charset="utf-8">
   <title>MusicVoting</title>
+  <link href="https://fonts.googleapis.com/css?family=Raleway&display=swap" rel="stylesheet">
   <link rel="stylesheet" type="text/css" href="style.css" />
   <script src="http://www.youtube.com/player_api"></script>
+  <script src="/socket.io/socket.io.js"></script>
   <script src="script.js"></script>
 </head>
 <body>
+  <div id="header">
+    <b><a href="/public/home">MusicVoting</a></b>
+  </div>
+  <button onclick="startMusic()">Start Playing Music</button>
+  <button onclick="requestNextSong()">Force-Skip Song</button>
+  <br />
+  <br />
   <div id="player"></div>
 </body>
 </html>
