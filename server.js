@@ -47,6 +47,9 @@ playerNsp.on("connection",function(socket) {
   var ids = Object.keys(songFile).sort((a,b) => songFile[b].votes - songFile[a].votes);
   var nextSongIndex = 0;
   socket.on("get-song",function(callback) {
+    while ( nextSongIndex < ids.length && songFile[ids[nextSongIndex]].reports ) {
+      nextSongIndex++;
+    }
     if ( nextSongIndex < ids.length ) {
       callback(songFile[ids[nextSongIndex++]]);
     } else {

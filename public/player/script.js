@@ -17,8 +17,13 @@ function createPlayer(firstSong) {
 
 function requestNextSong() {
   socket.emit("get-song",function(songObj) {
-    if ( initComplete ) player.loadVideoById(songObj.url,0);
-    else createPlayer(songObj.url);
+    if ( songObj ) {
+      if ( initComplete ) player.loadVideoById(songObj.url,0);
+      else createPlayer(songObj.url);
+      document.getElementById("musicEnd").innerText = "";
+    } else {
+      document.getElementById("musicEnd").innerText = "No more songs to play!";
+    }
   });
 }
 
