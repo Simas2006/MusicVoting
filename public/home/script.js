@@ -1,4 +1,5 @@
 var socket,songs,voteTable;
+var modMode = false;
 
 function renderSongs() {
   var table = document.getElementById("votableSongs");
@@ -33,30 +34,63 @@ function renderSongs() {
     col1.appendChild(downArrow);
     row.appendChild(col1);
     var col2 = document.createElement("td");
+    var reportButton = document.createElement("button");
+    if ( ! modMode ) {
+      reportButton.innerText = "⚑";
+    } else {
+      if ( songs[ids[i]].reports == 0 ) {
+        reportButton.innerText = "⚑";
+      } else {
+        reportButton.innerText = "⚑ " + songs[ids[i]].reports;
+        reportButton.style.color = "red";
+      }
+    }
+    reportButton.className = "reportButton";
+    reportButton["data-id"] = ids[i];
+    reportButton.onclick = function() {
+      if ( this["data-clicked"] ) return;
+      if ( ! modMode ) {
+        if ( confirm("Do you want to report this song as being ...?") ) {
+          socket.emit("report-song",this["data-id"]);
+          this.style.color = "red";
+          this["data-clicked"] = true;
+        }
+      } else {
+        var value = prompt("Type 'unreport' to remove all reports from this song (This song good)\nType 'delete' to delete this song (This song bad)\nPress Cancel to cancel");
+        if ( value == "unreport" ) {
+          socket.emit("mod-action",localStorage.getItem("mod-code"),"unreport",this["data-id"]);
+        } else if ( value == "delete" ) {
+          socket.emit("mod-action",localStorage.getItem("mod-code"),"delete",this["data-id"]);
+        }
+      }
+    }
+    col2.appendChild(reportButton);
+    row.appendChild(col2);
+    var col3 = document.createElement("td");
     var link = document.createElement("a");
     link.innerText = songs[ids[i]].title;
     link.href = "https://youtube.com/watch?v=" + songs[ids[i]].url;
     link.target = "_blank";
-    col2.appendChild(link);
-    col2.appendChild(document.createElement("br"));
+    col3.appendChild(link);
+    col3.appendChild(document.createElement("br"));
     if ( songs[ids[i]].author ) {
       var sub = document.createElement("sub");
       sub.innerText = "By " + songs[ids[i]].author;
-      col2.appendChild(sub);
+      col3.appendChild(sub);
     }
-    row.appendChild(col2);
-    var col3 = document.createElement("td");
+    row.appendChild(col3);
+    var col4 = document.createElement("td");
     var playButton = document.createElement("a");
     playButton.className = "playButton";
     playButton.href = "https://youtube.com/watch?v=" + songs[ids[i]].url;
     playButton.target = "_blank";
-    col3.appendChild(playButton);
+    col4.appendChild(playButton);
     var sub = document.createElement("a");
     sub.innerText = "Watch on YouTube";
     sub.href = "https://youtube.com/watch?v=" + songs[ids[i]].url;
     sub.target = "_blank";
-    col3.appendChild(sub);
-    row.appendChild(col3);
+    col4.appendChild(sub);
+    row.appendChild(col4);
     table.appendChild(row);
   }
 }
@@ -153,6 +187,14 @@ function setupHandlers() {
     songs = data;
     renderSongs();
   });
+  if ( localStorage.getItem("mod-code") ) {
+    socket.emit("check-mod-code",localStorage.getItem("mod-code"),function(result) {
+      if ( result ) {
+        modMode = true;
+        renderSongs();
+      }
+    });
+  }
 }
 
 window.onload = setupHandlers;

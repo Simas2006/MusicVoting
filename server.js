@@ -41,6 +41,29 @@ homeNsp.on("connection",function(socket) {
       callback(true,id,songFile);
     });
   });
+  socket.on("report-song",function(id) {
+    songFile[id].reports++;
+    songFileDirty = true;
+  });
+  socket.on("check-mod-code",function(code,callback) {
+    fs.readFile(__dirname + "/mod_codes.txt",function(err,data) {
+      data = data.toString().trim().split("\n");
+      callback(data.indexOf(code) > -1);
+    });
+  });
+  socket.on("mod-action",function(code,action,id) {
+    fs.readFile(__dirname + "/mod_codes.txt",function(err,data) {
+      data = data.toString().trim().split("\n");
+      if ( data.indexOf(code) <= -1 ) return;
+      if ( action == "unreport" ) {
+        songFile[id].reports = 0;
+      } else if ( action == "delete" ) {
+        delete songFile[id];
+      }
+      songFileDirty = true;
+      socket.emit("get-songs",songFile);
+    });
+  });
 });
 
 playerNsp.on("connection",function(socket) {

@@ -77,7 +77,7 @@ body > div:not(#header) {
 #submitButton:active {
   border: 4px inset turquoise;
 }
-#votableSongs td:nth-child(2) {
+#votableSongs td:nth-child(3) {
   width: 100%;
 }
 #votableSongs td:last-child {
@@ -158,4 +158,18 @@ body > div:not(#header) {
 .playButton::after {
   content: "▶";
   font-size: 1.5em;
+}
+.reportButton {
+  font-size: 110%;
+  color: #888;
+  border: 0;
+  cursor: pointer;
+  outline: 0;
+  background-color: white;
+}
+.reportButton:hover {
+  color: #aaa;
+}
+.reportButton:active {
+  color: #bbb;
 }
