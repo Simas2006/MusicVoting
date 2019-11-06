@@ -61,7 +61,7 @@ homeNsp.on("connection",function(socket) {
         delete songFile[id];
       }
       songFileDirty = true;
-      socket.emit("get-songs",songFile);
+      socket.emit("get-songs",songFile,true);
     });
   });
 });

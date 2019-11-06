@@ -1,13 +1,19 @@
-var socket,songs,voteTable;
+var socket,songs,voteTable,savedIDs;
 var modMode = false;
 
-function renderSongs() {
+function renderSongs(forceRedo) {
   var table = document.getElementById("votableSongs");
   while ( table.firstChild ) {
     table.removeChild(table.firstChild);
   }
-  var ids = Object.keys(songs);
-  ids = ids.sort((a,b) => songs[b].votes - songs[a].votes);
+  var ids;
+  if ( ! savedIDs || forceRedo ) {
+    var ids = Object.keys(songs);
+    ids = ids.sort((a,b) => songs[b].votes - songs[a].votes);
+    savedIDs = ids;
+  } else {
+    ids = savedIDs;
+  }
   for ( var i = 0; i < ids.length; i++ ) {
     var row = document.createElement("tr");
     row.id = "song-" + ids[i];
@@ -164,7 +170,7 @@ function submitSong() {
       songs = newSongData;
       voteTable[id] = 1;
       localStorage.setItem("vote",JSON.stringify(voteTable));
-      renderSongs();
+      renderSongs(true);
       document.getElementById("song-" + id).scrollIntoView();
       document.getElementById("submitURL").value = "";
       document.getElementById("submitEmail").value = "";
@@ -183,9 +189,9 @@ function setupHandlers() {
   if ( ! localStorage.getItem("vote") ) localStorage.setItem("vote","{}");
   voteTable = JSON.parse(localStorage.getItem("vote"));
   socket = io("/home");
-  socket.on("get-songs",function(data) {
+  socket.on("get-songs",function(data,forceRedo) {
     songs = data;
-    renderSongs();
+    renderSongs(forceRedo);
   });
   if ( localStorage.getItem("mod-code") ) {
     socket.emit("check-mod-code",localStorage.getItem("mod-code"),function(result) {
