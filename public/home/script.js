@@ -62,7 +62,8 @@ function renderSongs(forceRedo) {
           this["data-clicked"] = true;
         }
       } else {
-        var value = prompt("Type 'unreport' to remove all reports from this song (This song good)\nType 'delete' to delete this song (This song bad)\nPress Cancel to cancel");
+        var email = songs[this["data-id"]].email;
+        var value = prompt("This song was submitted by " + email + "\nType 'unreport' to remove all reports from this song (This song good)\nType 'delete' to delete this song (This song bad)\nPress Cancel to cancel");
         if ( value == "unreport" ) {
           socket.emit("mod-action",localStorage.getItem("mod-code"),"unreport",this["data-id"]);
         } else if ( value == "delete" ) {
