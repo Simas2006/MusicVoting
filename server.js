@@ -73,12 +73,21 @@ homeNsp.on("connection",function(socket) {
 playerNsp.on("connection",function(socket) {
   var ids = Object.keys(songFile).sort((a,b) => songFile[b].votes - songFile[a].votes);
   var nextSongIndex = 0;
+  socket.on("clear-recently-flags",function(callback) {
+    for ( var i = 0; i < ids.length; i++ ) {
+      songFile[ids[i]].recentlyPlayed = false;
+    }
+    songFileDirty = true;
+    callback();
+  });
   socket.on("get-song",function(callback) {
     while ( nextSongIndex < ids.length && songFile[ids[nextSongIndex]].reports ) {
       nextSongIndex++;
     }
     if ( nextSongIndex < ids.length ) {
+      songFile[ids[nextSongIndex]].recentlyPlayed = true;
       callback(songFile[ids[nextSongIndex++]]);
+      songFileDirty = true;
     } else {
       callback(null);
     }

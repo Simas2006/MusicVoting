@@ -33,7 +33,9 @@ function startMusic() {
     alert("The YouTube API is not yet loaded. Please wait and try again.");
     return;
   }
-  requestNextSong();
+  socket.emit("clear-recently-flags",function() {
+    requestNextSong();
+  });
 }
 
 function onYouTubePlayerAPIReady() {

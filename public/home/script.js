@@ -79,11 +79,13 @@ function renderSongs(forceRedo) {
     link.target = "_blank";
     col3.appendChild(link);
     col3.appendChild(document.createElement("br"));
-    if ( songs[ids[i]].author ) {
-      var sub = document.createElement("sub");
-      sub.innerText = "By " + songs[ids[i]].author;
-      col3.appendChild(sub);
-    }
+    var text = "";
+    if ( songs[ids[i]].author ) text += "By " + songs[ids[i]].author + " ";
+    if ( songs[ids[i]].recentlyPlayed ) text += "[Played last week!]"
+    var sub = document.createElement("sub");
+    sub.innerText = text;
+    if ( songs[ids[i]].recentlyPlayed ) sub.style.color = "green";
+    col3.appendChild(sub);
     row.appendChild(col3);
     var col4 = document.createElement("td");
     var playButton = document.createElement("a");
