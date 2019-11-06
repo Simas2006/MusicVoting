@@ -13,6 +13,10 @@ var songFileDirty = false;
 
 app.use("/public",express.static(__dirname + "/public"));
 
+app.get("/",function(request,response) {
+  response.redirect("/public/home");
+});
+
 homeNsp.on("connection",function(socket) {
   socket.emit("get-songs",songFile);
   socket.on("vote-song",function(id,magnitude) {
