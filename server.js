@@ -40,6 +40,7 @@ homeNsp.on("connection",function(socket) {
       var id = crypto.randomBytes(16).toString("hex");
       songObj.votes = 1;
       songObj.reports = 0;
+      songObj.recentlyPlayed = false;
       songFile[id] = songObj;
       songFileDirty = true;
       callback(true,id,songFile);
