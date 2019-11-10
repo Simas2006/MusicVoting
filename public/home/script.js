@@ -9,7 +9,7 @@ function renderSongs(forceRedo) {
   var ids;
   if ( ! savedIDs || forceRedo ) {
     var ids = Object.keys(songs);
-    ids = ids.sort((a,b) => songs[b].votes - songs[a].votes);
+    ids = ids.sort((a,b) => songs[a].votes != songs[b].votes ? songs[b].votes - songs[a].votes : Math.random() - 0.5);
     savedIDs = ids;
   } else {
     ids = savedIDs;
