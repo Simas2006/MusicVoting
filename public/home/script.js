@@ -56,7 +56,7 @@ function renderSongs(forceRedo) {
     reportButton.onclick = function() {
       if ( this["data-clicked"] ) return;
       if ( ! modMode ) {
-        if ( confirm("Do you want to report this song as being ...?") ) {
+        if ( confirm("Do you want to report this song as being inappropriate/containing explicit content?") ) {
           socket.emit("report-song",this["data-id"]);
           this.style.color = "red";
           this["data-clicked"] = true;
