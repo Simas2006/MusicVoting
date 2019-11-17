@@ -41,6 +41,7 @@ homeNsp.on("connection",function(socket) {
       songObj.votes = 1;
       songObj.reports = 0;
       songObj.recentlyPlayed = false;
+      songObj.mostRecentReset = -1;
       songFile[id] = songObj;
       songFileDirty = true;
       callback(true,id,songFile);

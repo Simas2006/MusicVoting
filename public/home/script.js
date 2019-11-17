@@ -195,7 +195,7 @@ function submitSong() {
 
 function setupHandlers() {
   if ( ! localStorage.getItem("vote") ) localStorage.setItem("vote","{}");
-  if ( ! localStorage.getItem("lastLogin") ) localStorage.setItem("lastLogin",-1);
+  if ( ! localStorage.getItem("lastLogin") ) localStorage.setItem("lastLogin",0);
   voteTable = JSON.parse(localStorage.getItem("vote"));
   socket = io("/home");
   socket.on("get-songs",function(data,forceRedo) {
