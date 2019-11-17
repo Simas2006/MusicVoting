@@ -87,6 +87,8 @@ playerNsp.on("connection",function(socket) {
     }
     if ( nextSongIndex < ids.length ) {
       songFile[ids[nextSongIndex]].recentlyPlayed = true;
+      songFile[ids[nextSongIndex]].votes = 0;
+      songFile[ids[nextSongIndex]].mostRecentReset = new Date().getTime();
       callback(songFile[ids[nextSongIndex++]]);
       songFileDirty = true;
     } else {

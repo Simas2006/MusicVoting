@@ -14,7 +14,11 @@ function renderSongs(forceRedo) {
   } else {
     ids = savedIDs;
   }
+  var lastLoginTime = parseInt(localStorage.getItem("lastLogin"));
   for ( var i = 0; i < ids.length; i++ ) {
+    if ( lastLoginTime < songs[ids[i]].mostRecentReset ) {
+      if ( voteTable[ids[i]] != 0 ) voteTable[ids[i]] = 0;
+    }
     var row = document.createElement("tr");
     row.id = "song-" + ids[i];
     var col1 = document.createElement("td");
@@ -102,6 +106,7 @@ function renderSongs(forceRedo) {
     row.appendChild(col4);
     table.appendChild(row);
   }
+  localStorage.setItem("lastLogin",new Date().getTime());
 }
 
 function voteSong(id,vote) {
@@ -190,6 +195,7 @@ function submitSong() {
 
 function setupHandlers() {
   if ( ! localStorage.getItem("vote") ) localStorage.setItem("vote","{}");
+  if ( ! localStorage.getItem("lastLogin") ) localStorage.setItem("lastLogin",-1);
   voteTable = JSON.parse(localStorage.getItem("vote"));
   socket = io("/home");
   socket.on("get-songs",function(data,forceRedo) {
