@@ -51,7 +51,11 @@ function onPlayerStateChange(event) {
 }
 
 function setupHandlers() {
-  socket = io("/player");
+  if ( ! localStorage.getItem("temp-lock") ) {
+    alert("Failed to load the page. Please try again.");
+  } else {
+    socket = io("/player");
+  }
 }
 
 window.onload = setupHandlers;
