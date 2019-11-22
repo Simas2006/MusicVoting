@@ -9,12 +9,16 @@ function renderSongs(forceRedo) {
   var ids;
   if ( ! savedIDs || forceRedo ) {
     var ids = Object.keys(songs);
-    ids = ids.sort((a,b) => songs[b].votes - songs[a].votes);
+    ids = ids.sort((a,b) => songs[a].votes != songs[b].votes ? songs[b].votes - songs[a].votes : Math.random() - 0.5);
     savedIDs = ids;
   } else {
     ids = savedIDs;
   }
+  var lastLoginTime = parseInt(localStorage.getItem("lastLogin"));
   for ( var i = 0; i < ids.length; i++ ) {
+    if ( lastLoginTime < songs[ids[i]].mostRecentReset ) {
+      if ( voteTable[ids[i]] != 0 ) voteTable[ids[i]] = 0;
+    }
     var row = document.createElement("tr");
     row.id = "song-" + ids[i];
     var col1 = document.createElement("td");
@@ -56,7 +60,7 @@ function renderSongs(forceRedo) {
     reportButton.onclick = function() {
       if ( this["data-clicked"] ) return;
       if ( ! modMode ) {
-        if ( confirm("Do you want to report this song as being ...?") ) {
+        if ( confirm("Do you want to report this song as being inappropriate/containing explicit content?") ) {
           socket.emit("report-song",this["data-id"]);
           this.style.color = "red";
           this["data-clicked"] = true;
@@ -102,6 +106,7 @@ function renderSongs(forceRedo) {
     row.appendChild(col4);
     table.appendChild(row);
   }
+  localStorage.setItem("lastLogin",new Date().getTime());
 }
 
 function voteSong(id,vote) {
@@ -190,6 +195,7 @@ function submitSong() {
 
 function setupHandlers() {
   if ( ! localStorage.getItem("vote") ) localStorage.setItem("vote","{}");
+  if ( ! localStorage.getItem("lastLogin") ) localStorage.setItem("lastLogin",0);
   voteTable = JSON.parse(localStorage.getItem("vote"));
   socket = io("/home");
   socket.on("get-songs",function(data,forceRedo) {

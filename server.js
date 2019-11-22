@@ -41,6 +41,7 @@ homeNsp.on("connection",function(socket) {
       songObj.votes = 1;
       songObj.reports = 0;
       songObj.recentlyPlayed = false;
+      songObj.mostRecentReset = -1;
       songFile[id] = songObj;
       songFileDirty = true;
       callback(true,id,songFile);
@@ -66,7 +67,7 @@ homeNsp.on("connection",function(socket) {
         delete songFile[id];
       }
       songFileDirty = true;
-      socket.emit("get-songs",songFile,true);
+      socket.emit("get-songs",songFile,action == "delete");
     });
   });
 });
@@ -87,6 +88,8 @@ playerNsp.on("connection",function(socket) {
     }
     if ( nextSongIndex < ids.length ) {
       songFile[ids[nextSongIndex]].recentlyPlayed = true;
+      songFile[ids[nextSongIndex]].votes = 0;
+      songFile[ids[nextSongIndex]].mostRecentReset = new Date().getTime();
       callback(songFile[ids[nextSongIndex++]]);
       songFileDirty = true;
     } else {
