@@ -88,13 +88,29 @@ playerNsp.on("connection",function(socket) {
     }
     if ( nextSongIndex < ids.length ) {
       songFile[ids[nextSongIndex]].recentlyPlayed = true;
-      songFile[ids[nextSongIndex]].votes = 0;
-      songFile[ids[nextSongIndex]].mostRecentReset = new Date().getTime();
       callback(songFile[ids[nextSongIndex++]]);
       songFileDirty = true;
     } else {
       callback(null);
     }
+  });
+  socket.on("process-all-songs",function(callback) {
+    for ( var i = 0; i < ids.length; i++ ) {
+      if ( songFile[ids[i]].votes < -3 ) {
+        delete songFile[ids[i]];
+      } else {
+        songFile[ids[i]].votes = 0;
+        songFile[ids[i]].mostRecentReset = new Date().getTime();
+      }
+    }
+    songFileDirty = true;
+    callback();
+  });
+  socket.on("check-mod-code",function(code,callback) {
+    fs.readFile(__dirname + "/mod_codes.txt",function(err,data) {
+      data = data.toString().trim().split("\n");
+      callback(data.indexOf(code) > -1);
+    });
   });
 });
 

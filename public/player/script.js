@@ -38,6 +38,14 @@ function startMusic() {
   });
 }
 
+function processAllSongs() {
+  if ( confirm("Are you sure you want to process all songs? (set all >= -3 to 0, delete all others)") ) {
+    socket.emit("process-all-songs",function() {
+      alert("All songs successfully processed.");
+    });
+  }
+}
+
 function onYouTubePlayerAPIReady() {
   apiReady = true;
 }
@@ -51,10 +59,14 @@ function onPlayerStateChange(event) {
 }
 
 function setupHandlers() {
-  if ( ! localStorage.getItem("temp-lock") ) {
-    alert("Failed to load the page. Please try again.");
+  if ( localStorage.getItem("mod-code") ) {
+    var tempSocket = io("/player");
+    tempSocket.emit("check-mod-code",localStorage.getItem("mod-code"),function(valid) {
+      if ( valid ) socket = tempSocket;
+      else alert("Failed to load the page. Please try again.");
+    });
   } else {
-    socket = io("/player");
+    alert("Failed to load the page. Please try again.");
   }
 }
 
