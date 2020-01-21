@@ -66,13 +66,17 @@ function renderSongs(forceRedo) {
           this["data-clicked"] = true;
         }
       } else {
-        var email = songs[this["data-id"]].email;
-        var value = prompt("This song was submitted by " + email + "\nType 'unreport' to remove all reports from this song (This song good)\nType 'delete' to delete this song (This song bad)\nPress Cancel to cancel");
-        if ( value == "unreport" ) {
-          socket.emit("mod-action",localStorage.getItem("mod-code"),"unreport",this["data-id"]);
-        } else if ( value == "delete" ) {
-          socket.emit("mod-action",localStorage.getItem("mod-code"),"delete",this["data-id"]);
-        }
+        socket.emit("check-mod-code",localStorage.getItem("mod-code"),result => {
+          if ( result ) {
+            var email = songs[this["data-id"]].email;
+            var value = prompt("This song was submitted by " + email + "\nType 'unreport' to remove all reports from this song (This song good)\nType 'delete' to delete this song (This song bad)\nPress Cancel to cancel");
+            if ( value == "unreport" ) {
+              socket.emit("mod-action",localStorage.getItem("mod-code"),"unreport",this["data-id"]);
+            } else if ( value == "delete" ) {
+              socket.emit("mod-action",localStorage.getItem("mod-code"),"delete",this["data-id"]);
+            }
+          }
+        });
       }
     }
     col2.appendChild(reportButton);
